@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strconv"
+	"strings"
 )
 
 // merge merges two slices and returns the resulting sorted slice
@@ -65,6 +69,26 @@ func mergeSort(s []int) ([]int, int) {
 }
 
 func main() {
-	fmt.Println("epta")
+	if len(os.Args) < 2 {
+		os.Exit(0)
+	}
 
+	fpath := os.Args[1]
+	data, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	numStr := string(data)
+	nums := make([]int, 0)
+
+	for _, s := range strings.Fields(numStr) {
+		n, err := strconv.ParseInt(s, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		nums = append(nums, int(n))
+	}
+	_, inversions := mergeSort(nums)
+	fmt.Printf("Found %d inversions in %s\n", inversions, fpath)
 }
