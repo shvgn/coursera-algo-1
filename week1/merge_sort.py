@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# https://www.coursera.org/learn/algorithm-design-analysis/home/week/1
-# Programming assignment
+"""
+https://www.coursera.org/learn/algorithm-design-analysis/home/week/1
+Programming assignment
+"""
 
 import sys
 
@@ -31,24 +33,27 @@ def merge_sort(lst):
         return merged, inversions
 
     l = len(lst)
+
     if l <= 1:
         return lst, 0
-    elif l == 2:
+
+    if l == 2:
         inv = 0
         if lst[0] > lst[1]:
             lst.sort()  # don't act derp
             inv = 1
         return lst, inv
-    else:
-        div = l // 2
-        lst1, inv1 = merge_sort(lst[:div])
-        lst2, inv2 = merge_sort(lst[div:])
-        merged, inv3 = merge(lst1, lst2)
-        inversions = inv1 + inv2 + inv3
-        return merged, inversions
+
+    div = l // 2
+    lst1, inv1 = merge_sort(lst[:div])
+    lst2, inv2 = merge_sort(lst[div:])
+    merged, inv3 = merge(lst1, lst2)
+    inversions = inv1 + inv2 + inv3
+    return merged, inversions
 
 
 def test():
+    """Test"""
     cases = [{
         'name': 'Case 1',
         'nums': [1, 3, 5, 2, 4, 6],
@@ -97,11 +102,12 @@ def test():
 
 
 def list_of_nums(path):
+    """Reads the file"""
     try:
         with open(path) as f:
             return [int(line) for line in f.readlines()]
     except Exception:
-        print('Error: Cannot read data, check the file')
+        print('Error: Cannot read data, check the file:')
         sys.exit(1)
 
 
