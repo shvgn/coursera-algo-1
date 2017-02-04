@@ -68,15 +68,10 @@ func mergeSort(s []int) ([]int, int) {
 	return merged, inversions
 }
 
-func main() {
-	if len(os.Args) < 2 {
-		os.Exit(0)
-	}
-
-	fpath := os.Args[1]
+func ReadNums(fpath string) ([]int, error) {
 	data, err := ioutil.ReadFile(fpath)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
 	numStr := string(data)
@@ -85,10 +80,24 @@ func main() {
 	for _, s := range strings.Fields(numStr) {
 		n, err := strconv.ParseInt(s, 10, 64)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		nums = append(nums, int(n))
 	}
+	return nums, nil
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		os.Exit(0)
+	}
+
+	fpath := os.Args[1]
+	nums, err := ReadNums(fpath)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	_, inversions := mergeSort(nums)
 	fmt.Printf("Found %d inversions in %s\n", inversions, fpath)
 }
