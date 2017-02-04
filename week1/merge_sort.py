@@ -93,22 +93,26 @@ def test():
         assert inversions == case['expected'], \
                 '%s failed: expected %d inversions, got %d' % (
                     case['name'], case['expected'], inversions)
+    print("Ok")
 
 
 def list_of_nums(path):
     try:
         with open(path) as f:
             return [int(line) for line in f.readlines()]
-    except:
+    except Exception:
         print('Error: Cannot read data, check the file')
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    # test()
 
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
-        nums = list_of_nums(path)
-        srt, inversions = merge_sort(nums)
-        print('Found %d inversions in %s' % (inversions, path))
+    if len(sys.argv) != 2:
+        print("Running tests...")
+        test()
+        sys.exit(0)
+
+    path = sys.argv[1]
+    nums = list_of_nums(path)
+    srt, inversions = merge_sort(nums)
+    print('Found %d inversions in %s' % (inversions, path))
