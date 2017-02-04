@@ -95,7 +95,8 @@ func main() {
 	fpath := os.Args[1]
 	nums, err := ReadNums(fpath)
 	if err != nil {
-		panic(err.Error())
+		fmt.Printf(err.Error())
+		os.Exit(1)
 	}
 
 	_, inversions := mergeSort(nums)
