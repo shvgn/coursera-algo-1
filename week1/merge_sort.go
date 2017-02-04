@@ -30,13 +30,13 @@ func merge(s1, s2 []int) ([]int, int) {
 
 		if s1finished || (!s2finished && x1 > x2) {
 			merged[i+j] = x2
-			j += 1
+			j++
 			if !s1finished {
 				inversions += l1 - i
 			}
 		} else if s2finished || x1 <= x2 {
 			merged[i+j] = x1
-			i += 1
+			i++
 		}
 	}
 	return merged, inversions
@@ -51,7 +51,7 @@ func mergeSort(s []int) ([]int, int) {
 		x1, x2 := s[0], s[1]
 		inversions := 0
 		if x1 > x2 {
-			s[0], s[1] = x1, x2
+			s[0], s[1] = x2, x1
 			inversions = 1
 		}
 		return s, inversions
