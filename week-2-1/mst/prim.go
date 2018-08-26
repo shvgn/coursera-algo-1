@@ -1,7 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"math"
+	"os"
+	"sort"
+	"strconv"
+	"strings"
 )
 
 /*
@@ -37,6 +44,111 @@ requires a heap that supports deletions, and you'll probably need to maintain so
 their positions in the heap.
 */
 
+type node struct {
+	index           int
+	edges           []*edge
+	minimalEdgeCost int
+}
+
+func (n *node) resetMinEdgeCost() {
+	minCost := math.MaxInt32
+	for _, edge := range n.edges {
+		if edge.cost < minCost {
+			minCost = edge.cost
+		}
+	}
+}
+
+type edge struct {
+	node1     int
+	node2     int
+	cost      int
+	accounted bool
+}
+
+func parseCount(s *bufio.Scanner) (int, int, error) {
+	ok := s.Scan()
+	if !ok {
+		return 0, 0, s.Err()
+	}
+	line := s.Text()
+	return parseLine(line)
+
+}
+
+func parseLine(line string) (int, int, error) {
+	var err error
+
+	splitted := strings.Fields(line)
+	if len(splitted) != 2 {
+		err = fmt.Errorf("unexpected line: \"%s\"", line)
+		return 0, 0, err
+	}
+
+	nodesCountStr, edgesCountStr := splitted[0], splitted[1]
+
+	nodesCount, nodesCountParseErr := strconv.ParseInt(nodesCountStr, 10, 32)
+	if nodesCountParseErr != nil {
+		err = fmt.Errorf("cannot parse nodes count: %s", nodesCountParseErr)
+		return 0, 0, err
+	}
+
+	edgesCount, edgesCountParseErr := strconv.ParseInt(edgesCountStr, 10, 32)
+	if edgesCountParseErr != nil {
+		err = fmt.Errorf("cannot parse edges count: %s", edgesCountParseErr)
+		return 0, 0, err
+	}
+
+	return int(nodesCount), int(edgesCount), nil
+}
+
 func main() {
-	fmt.Println("yuppi")
+
+	filenmae := "./edges.txt"
+	file, openErr := os.Open(filenmae)
+	if openErr != nil {
+		log.Fatal("Cannot open file", openErr)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	Nnodes, Nedges, countParseErr := parseCount(scanner)
+	if countParseErr != nil {
+		log.Fatal(countParseErr)
+	}
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		weight, length, err := parseLine(line)
+		if err != nil {
+			log.Fatal("cannot parse file", err)
+		}
+
+		// problem #1
+		// score := float64(weight) - float64(length)
+		// problem #2
+		score := float64(weight) / float64(length)
+
+		jobs[i] = job{
+			weight: int(weight),
+			length: int(length),
+			score:  score,
+		}
+
+		i++
+	}
+
+	sort.Sort(byScore(jobs))
+
+	completionTime := 0
+	weightedSum := 0
+	for _, job := range jobs {
+		completionTime += job.length
+		weightedSum += completionTime * job.weight
+	}
+
+	// Right answers are
+	// #1: 69119377652
+	// #2: 67311454237
+	fmt.Println(weightedSum)
 }
